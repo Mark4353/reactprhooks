@@ -25,8 +25,7 @@ const Text = styled.span`
   flex: 1;
   margin-left: 8px;
   font-size: 16px;
-  text-decoration: ${({ completed }) => (completed ? "line-through" : "none")};
-  color: ${({ completed }) => (completed ? "#888" : "#222")};
+  color: #888;
 `;
 
 const DeleteButton = styled.button`
