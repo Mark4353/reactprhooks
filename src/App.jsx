@@ -6,11 +6,28 @@ import TodoEditor from './componets/TodoEditor';
 import Filter from './componets/Filter';
 import Info from './componets/Info';
 
+const TODOS_KEY = 'todos';
+
 export default class App extends Component {
   state = {
-    todos: data,
+    todos: [],
     filter: '',
   };
+
+  componentDidMount() {
+    const saved = localStorage.getItem(TODOS_KEY);
+    if (saved) {
+      this.setState({ todos: JSON.parse(saved) });
+    } else {
+      this.setState({ todos: data });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (prevState.todos !== this.state.todos) {
+      localStorage.setItem(TODOS_KEY, JSON.stringify(this.state.todos));
+    }
+  }
 
   handleFilterChange = (filter) => {
     this.setState({ filter });

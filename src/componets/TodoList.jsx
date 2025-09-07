@@ -1,4 +1,10 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+import { useState } from "react";
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; height: 0; margin-bottom: 0; padding: 0; }
+`;
 
 const List = styled.ul`
   list-style: none;
@@ -13,6 +19,9 @@ const Item = styled.li`
   background: #f5f5f5;
   border-radius: 4px;
   padding: 8px;
+  opacity: 1;
+  transition: opacity 0.4s;
+  animation: ${({ $isRemoving }) => ($isRemoving ? fadeOut : "none")} 0.4s forwards;
 `;
 
 const Checkbox = styled.input`
@@ -25,7 +34,10 @@ const Text = styled.span`
   flex: 1;
   margin-left: 8px;
   font-size: 16px;
-  color: #888;
+  color: ${({ completed }) => (completed ? "#bbb" : "#222")};
+  text-decoration: ${({ completed }) => (completed ? "line-through" : "none")};
+  opacity: ${({ completed }) => (completed ? 0.6 : 1)};
+  transition: color 0.2s, opacity 0.2s;
 `;
 
 const DeleteButton = styled.button`
@@ -42,17 +54,27 @@ const DeleteButton = styled.button`
 `;
 
 export default function TodoList({ todos, onToggle, onDelete }) {
+  const [removingIds, setRemovingIds] = useState([]);
+
+  const handleDelete = (id) => {
+    setRemovingIds((ids) => [...ids, id]);
+    setTimeout(() => {
+      onDelete(id);
+      setRemovingIds((ids) => ids.filter((remId) => remId !== id));
+    }, 400); 
+  };
+
   return (
     <List>
       {todos.map((todo) => (
-        <Item key={todo.id}>
+        <Item key={todo.id} $isRemoving={removingIds.includes(todo.id)}>
           <Checkbox
             type="checkbox"
             checked={todo.completed}
             onChange={() => onToggle(todo.id)}
           />
           <Text completed={todo.completed}>{todo.text}</Text>
-          <DeleteButton onClick={() => onDelete(todo.id)}>Delete</DeleteButton>
+          <DeleteButton onClick={() => handleDelete(todo.id)}>Delete</DeleteButton>
         </Item>
       ))}
     </List>
