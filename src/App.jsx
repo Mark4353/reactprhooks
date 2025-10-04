@@ -5,33 +5,55 @@ import TodoList from './componets/TodoList';
 import TodoEditor from './componets/TodoEditor';
 import Filter from './componets/Filter';
 import Info from './componets/Info';
+import { useState, useEffect } from 'react';
+
 
 const TODOS_KEY = 'todos';
 
-export default class App extends Component {
-  state = {
-    todos: [],
-    filter: '',
-  };
+export const App = () => {
+  // state = {
+  //   todos: [],
+  //   filter: '',
+  // };
 
-  componentDidMount() {
-    const saved = localStorage.getItem(TODOS_KEY);
+const [todos, setTodos] = useState([]);
+
+const [filter, setFilter] = useState("");
+
+  // componentDidMount() {
+  //   const saved = localStorage.getItem(TODOS_KEY);
+  //   if (saved) {
+  //     this.setState({ todos: JSON.parse(saved) });
+  //   } else {
+  //     this.setState({ todos: data });
+  //   }
+  // }
+useEffect(()=>{
+   const saved = localStorage.getItem(TODOS_KEY);
     if (saved) {
-      this.setState({ todos: JSON.parse(saved) });
+      setTodos( JSON.parse(saved) );
     } else {
-      this.setState({ todos: data });
+      setTodos( data );
     }
-  }
+},
+[]
 
-  componentDidUpdate(_, prevState) {
-    if (prevState.todos !== this.state.todos) {
-      localStorage.setItem(TODOS_KEY, JSON.stringify(this.state.todos));
-    }
-  }
+)
+  // componentDidUpdate(_, prevState) {
+  //   if (prevState.todos !== this.state.todos) {
+  //     localStorage.setItem(TODOS_KEY, JSON.stringify(this.state.todos));
+  //   }
+  // }
 
-  handleFilterChange = (filter) => {
-    this.setState({ filter });
-  };
+useEffect(() =>{
+      localStorage.setItem(TODOS_KEY, JSON.stringify(todos));
+},
+[todos]
+)
+
+  // handleFilterChange = (filter) => {
+  //   this.setState({ filter });
+  // };
 
   toggleTodo = (id) => {
     this.setState((prevState) => ({
